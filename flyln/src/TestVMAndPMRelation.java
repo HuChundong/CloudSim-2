@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimerTask;
 
-import org.cloudbus.cloudsim.myCloudlet;
+
 import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBroker;
@@ -44,7 +44,7 @@ import javax.servlet.ServletContextListener;
 public class TestVMAndPMRelation {
 
 	public static DatacenterBroker broker ;
-	public static  Datacenter   datacenter0 ;
+	public static  myDatacenter   datacenter0 ;
 	public static int SLOTSCOUNT = 1;
 	//共有常量，云中相同主机数和主机配置
 	public static int MCS[] = {30,30,4000};
@@ -52,7 +52,7 @@ public class TestVMAndPMRelation {
 	public static int vmId = 0;
 	public static int curVmId = 0;
 	/** The cloudlet list. */
-	private static List<myCloudlet> cloudletList = new LinkedList<myCloudlet>();
+	private static List<woCloudlet> cloudletList = new LinkedList<woCloudlet>();
 
 	/** The vmlist. */
 	private static List<myVm> vmlist = new LinkedList<myVm>();
@@ -128,9 +128,9 @@ public class TestVMAndPMRelation {
 	}
 
 
-	private static List<myCloudlet> createCloudlet(int userId, int cloudlets, int idShift){
+	private static List<woCloudlet> createCloudlet(int userId, int cloudlets, int idShift){
 		// Creates a container to store Cloudlets
-		LinkedList<myCloudlet> list = new LinkedList<myCloudlet>();
+		LinkedList<woCloudlet> list = new LinkedList<woCloudlet>();
 
 		//cloudlet parameters
 		long length = 40000;
@@ -139,10 +139,10 @@ public class TestVMAndPMRelation {
 		int pesNumber = 1;
 		UtilizationModel utilizationModel = new UtilizationModelFull();
 
-		myCloudlet[] cloudlet = new myCloudlet[cloudlets];
+		woCloudlet[] cloudlet = new woCloudlet[cloudlets];
 
 		for(int i=0;i<cloudlets;i++){
-			cloudlet[i] = new myCloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+			cloudlet[i] = new woCloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
 			// setting the owner of these Cloudlets
 			cloudlet[i].setUserId(userId);
 			list.add(cloudlet[i]);
@@ -150,9 +150,9 @@ public class TestVMAndPMRelation {
 
 		return list;
 	}
-	private static List<myCloudlet> createCloudlet(int userId, int cloudlets, int idShift,int size){
+	private static List<woCloudlet> createCloudlet(int userId, int cloudlets, int idShift,int size){
 		// Creates a container to store Cloudlets
-		LinkedList<myCloudlet> list = new LinkedList<myCloudlet>();
+		LinkedList<woCloudlet> list = new LinkedList<woCloudlet>();
 
 		//cloudlet parameters
 		long length = 40000*size;
@@ -161,10 +161,10 @@ public class TestVMAndPMRelation {
 		int pesNumber = 1;
 		UtilizationModel utilizationModel = new UtilizationModelFull();
 
-		myCloudlet[] cloudlet = new myCloudlet[cloudlets];
+		woCloudlet[] cloudlet = new woCloudlet[cloudlets];
 
 		for(int i=0;i<cloudlets;i++){
-			cloudlet[i] = new myCloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+			cloudlet[i] = new woCloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
 			// setting the owner of these Cloudlets
 			cloudlet[i].setUserId(userId);
 			list.add(cloudlet[i]);
@@ -222,7 +222,7 @@ public class TestVMAndPMRelation {
 					myVm curVm = createVM(userId, 1, vmId,vmlistId).get(0);
 					vmlist.add(curVm);
 					
-					myCloudlet curCloudlet =  createCloudlet(userId, 1, vmId++, randomCloudletSize).get(0);
+					woCloudlet curCloudlet =  createCloudlet(userId, 1, vmId++, randomCloudletSize).get(0);
 					cloudletList.add(curCloudlet);
 				}
 				
@@ -329,7 +329,7 @@ public class TestVMAndPMRelation {
 			CloudSim.startSimulation();  
 
 			// Final step: Print results when simulation is over
-			List<myCloudlet> newList = broker.getCloudletReceivedList();
+			List<woCloudlet> newList = broker.getCloudletReceivedList();
 	
 			CloudSim.stopSimulation();
 	
@@ -396,7 +396,7 @@ private static List<myHost> createHosts(int[] peList)
 	return hostList;
 	
 }
-	private static Datacenter createDatacenter(String name){
+	private static myDatacenter createDatacenter(String name){
 
 		
 		int hostNum = HOSTNUM;
@@ -423,9 +423,9 @@ private static List<myHost> createHosts(int[] peList)
 
 
 		// 6. Finally, we need to create a PowerDatacenter object.
-		Datacenter datacenter = null;
+		myDatacenter datacenter = null;
 		try {
-			datacenter = new Datacenter(name, characteristics, new myVmAllocationPolicy(hostList), storageList, 0);
+			datacenter = new myDatacenter(name, characteristics, new myVmAllocationPolicy(hostList), storageList, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -451,9 +451,9 @@ private static List<myHost> createHosts(int[] peList)
 	 * Prints the Cloudlet objects
 	 * @param list  list of Cloudlets
 	 */
-	private static void printCloudletList(List<myCloudlet> list) {
+	private static void printCloudletList(List<woCloudlet> list) {
 		int size = list.size();
-		myCloudlet cloudlet;
+		woCloudlet cloudlet;
 
 		String indent = "    ";
 		Log.printLine();
@@ -466,7 +466,7 @@ private static List<myHost> createHosts(int[] peList)
 			cloudlet = list.get(i);
 			Log.print(indent + cloudlet.getCloudletId() + indent + indent);
 
-			if (cloudlet.getCloudletStatus() == myCloudlet.SUCCESS){
+			if (cloudlet.getCloudletStatus() == woCloudlet.SUCCESS){
 				Log.print("SUCCESS");
 
 				Log.printLine( indent + indent + cloudlet.getResourceId() + indent + indent + indent + cloudlet.getVmId() +
