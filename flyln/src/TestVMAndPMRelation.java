@@ -426,6 +426,8 @@ private static List<myHost> createHosts(int[] peList)
 		myDatacenter datacenter = null;
 		try {
 			datacenter = new myDatacenter(name, characteristics, new myVmAllocationPolicy(hostList), storageList, 0);
+		
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

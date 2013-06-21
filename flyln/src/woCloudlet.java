@@ -18,7 +18,15 @@ public class woCloudlet extends myCloudlet {
 			UtilizationModel utilizationModelCpu,
 			UtilizationModel utilizationModelRam, 
 			UtilizationModel utilizationModelBw){
-		super(pesNumber, cloudletOutputSize, pesNumber, cloudletOutputSize, cloudletOutputSize, null, null, null);
+		 super(
+					cloudletId,
+					cloudletLength,
+					pesNumber,
+					cloudletFileSize,
+					cloudletOutputSize,
+					utilizationModelCpu,
+					utilizationModelRam,
+					utilizationModelBw);
 		
 		waitTime = 0;
 	}

@@ -19,7 +19,8 @@ public class myHost extends Host {
 	private List<List<myVm>> waitVmsQueue;
 	private List<myVm> curChosenQueue;
 	private Timer timer = new Timer();
-	private myThread thread = new myThread(this);
+	private static boolean timerStarted = false;
+	//private myThread thread = new myThread(this);
 	
 	public myHost(int id, RamProvisioner ramProvisioner,
 			BwProvisioner bwProvisioner, long storage,
@@ -151,12 +152,21 @@ public class myHost extends Host {
 			return successUpdateQueneLen;
 		}
 		//beginVMsAllocation();
-		timer.schedule(this, 0, 100*1000);
-		thread.start();
+		if(!timerStarted)
+		{
+			timer.schedule(this, 0, 100*1000);
+			timerStarted = true;
+		}
+	//	thread.start();
 		
 		return successCreateVm;	
 		
 	}
+	private void sendMsgToDC(myVm vm){
+		myDatacenter mc =  (myDatacenter)this.getDatacenter();
+		mc.VmCreatedSuccess(vm);
+	}
+	
 	private void beginVMsAllocation(){
 		boolean successGetConfig = getConfigFromMySchedulingAlgorithm();
 		boolean successCreateVM = false;
@@ -167,10 +177,14 @@ public class myHost extends Host {
 		//如果成功获取配置,则创建选择的vms，并在等待队列中删除选中的vms
 		for( myVm vm : curChosenQueue){
 			successCreateVM = this.vmCreate(vm);
-			if(successCreateVM)	removeVm((myVm)vm);
+			if(successCreateVM)	
+				{
+					removeVm((myVm)vm);
+					sendMsgToDC(vm);
+				}
 		}
 		if(!successCreateVM){
-			Log.printLine("在主机"+this.getId()+"上创建VM失败！");
+			//Log.printLine("在主机"+this.getId()+"上创建VM失败！");
 		}
 	}
 	//将Vm移出等待队列，Vm进入PM运行
@@ -246,7 +260,7 @@ public class myHost extends Host {
 		}
 		//若chosenConfig为空
 		if(isNull){
-			Log.printLine("主机"+this.getId()+"暂时没有新任务！");
+			//Log.printLine("主机"+this.getId()+"暂时没有新任务！");
 			return true;
 		}
 		//若chosenConfig不为空，则根据配置进行VM选择
@@ -259,7 +273,7 @@ public class myHost extends Host {
 				
 			}
 		}
-		//Log.printLine("chosenConfig = "+printArray(chosenConfig));
+		Log.printLine("chosenConfig = "+printArray(chosenConfig));
 		//查看是否有等待任务
 //		for(List<myVm> vm:waitVmsQueue)
 //		{
@@ -269,7 +283,7 @@ public class myHost extends Host {
 //			else continue;
 //		}
 		//Log.printLine("主机"+this.getId()+"暂时没有新任务！");
-		return false;
+		return true;
 	}
 	@Override
 	 public void run() {
@@ -286,35 +300,8 @@ public class myHost extends Host {
 		  
 		  return arrayResult;
 	 }
-	 class myThread extends Thread{
-		 private TimerTask task;
-		 private myVm vm;
-		 private boolean _run = true;
-		 public myThread(TimerTask task){
-			 this.task = task;
-		 }
-		 @Override
-		 public void run(){
-			 
-			 while(_run){
+	 
 
-						for(List<myVm> listForVmi : waitVmsQueue)
-						{
-							if(!listForVmi.contains(vm)) {
-								_run = false;
-								thread.stop
-								break;  
-							}
-						}
-					
-			 }
-			 
-		 }
-		   public void stopThread(boolean run) {
-		        this._run = !run;
-		    }
-		   public void 
-		 
-	 }
 
 }
+ 

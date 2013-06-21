@@ -11,7 +11,8 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 
 
-public class myDatacenter extends Datacenter {
+public class myDatacenter extends Datacenter implements MyCallInterface
+{
 	
 	private List<myVm> onceSubmittedVmList = new ArrayList<myVm>();
 	private List<myVm> allSubmittedVmList = new ArrayList<myVm>();
@@ -170,8 +171,14 @@ public class myDatacenter extends Datacenter {
 	protected void processVmCreate(SimEvent ev, boolean ack) {
 		Vm vm = (Vm) ev.getData();
 
-		boolean result = getVmAllocationPolicy().allocateHostForVm(vm);
-
+		getVmAllocationPolicy().allocateHostForVm(vm);
+		
+		
+	}
+	//从host那里得知，vm创建成功
+	public void VmCreatedSuccess(myVm vm){
+		boolean ack = true;
+		boolean result = true;
 		if (ack) {
 			int[] data = new int[3];
 			data[0] = getId();
