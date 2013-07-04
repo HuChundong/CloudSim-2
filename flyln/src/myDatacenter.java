@@ -118,7 +118,7 @@ public class myDatacenter extends Datacenter implements MyCallInterface
 			case CloudSimTags.VM_CREATE_ACK:
 				processVmCreate(ev, true);
 				break;
-			case CloudSimTags.VM_FINISH:
+			case CloudSimTags.VM_WaitCreate:
 				updateCloudletProcessing();
 				checkCloudletCompletion();
 				break;
@@ -172,7 +172,7 @@ public class myDatacenter extends Datacenter implements MyCallInterface
 		Vm vm = (Vm) ev.getData();
 
 		getVmAllocationPolicy().allocateHostForVm(vm);
-		
+		send(getId(), 0,CloudSimTags.VM_WaitCreate, null);
 		
 	}
 	//从host那里得知，vm创建成功

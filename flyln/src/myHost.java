@@ -154,7 +154,7 @@ public class myHost extends Host {
 		//beginVMsAllocation();
 		if(!timerStarted)
 		{
-			timer.schedule(this, 0, 100*1000);
+			timer.schedule(this, 3*1000, 10*1000);//延后三秒钟进行vm的分配
 			timerStarted = true;
 		}
 	//	thread.start();
